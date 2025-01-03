@@ -7,11 +7,10 @@ This module will automatically run most JB2A Animations such as Melee/Ranged Att
 
 ## You can find the documentation on the [WIKI](https://api.theripper93.com/modulewiki/autoanimations/free) [WORK IN PROGRESS]
 
-# Original Documentation
-
 **No animations are provided in this module. It is designed to work in conjunction with the JB2A Animated Assets module. This module has been reviewed, approved and recommended by JB2A**  
-
 I am not affiliated with JB2A, and am working on this only as a side project to make these great animation more easily accesible. 
+
+# Original Documentation
   
 ## **Tutorial Video Links**
 * [Module Overview](https://www.youtube.com/watch?v=FkdjiCLnfyw)
