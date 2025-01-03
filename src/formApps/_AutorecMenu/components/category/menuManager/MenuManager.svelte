@@ -49,7 +49,7 @@
                 modal: true,
                 onOk: (app) => {
                     //@ts-ignore
-                    const form = app.element.find("form")[0];
+                    const form = app.application.element.find("form")[0];
                     if (!form.data.files.length)
                         return ui.notifications?.error(
                             "You did not upload a data file!"
