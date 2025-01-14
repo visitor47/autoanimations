@@ -1,4 +1,7 @@
 # Automated Animations
+> [!WARNING]  
+> Note that since I've taken over the module, there will be no updates or fixes to the V12 version, as v13 is close i will start developement with that foundry version. For any issues\help with the v12 version, see https://discord.com/channels/772596237605011466/1067667886191149176 in the JB2A (https://discord.gg/mehvR2WD) discord channel
+
 This module will automatically run most JB2A Animations such as Melee/Ranged Attacks, Spell Attacks, and Instant Spells
 
 ## Before opening an issue read [THIS](https://github.com/theripper93/Levels/blob/v9/ISSUES.md)
