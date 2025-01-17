@@ -51,9 +51,9 @@ export function systemHooks() {
 
 	        } else {
 	        	 let compiledData = await getRequiredData({
-                    actorId: msg.speaker.actor ?? msg.system.context.speaker.actor,
-                    targets: compileTargets(msg.system.context.targetSpeakers),
-	        		itemId: msg.system.context.powerId,
+                    actorId: msg.speaker.actor ?? msg.system.context?.speaker.actor,
+                    targets: compileTargets(msg.system.context?.targetSpeakers),
+	        		itemId: msg.system.context?.powerId,
 	                workflow: msg,
                 })
 	        	if (!compiledData.item) { return; }
