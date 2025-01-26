@@ -11,12 +11,12 @@ async function checkMessage(msg) {
         return 
     };
 
-    let witcherFlags = msg.flags?.TheWitcherTRPG
+    let data = msg.system ?? msg.flags?.TheWitcherTRPG
+    console.log(data)
     let compiledData = await getRequiredData({
-        item: msg.flags?.item ?? witcherFlags?.attack?.item,
-        spell: msg.flags?.spell ?? witcherFlags?.attack?.spell,
-        attackSkill: msg.flags?.attackSkill ?? witcherFlags?.attack?.attackSkill,
-        damage: msg.flags?.damage ?? witcherFlags?.damage,
+        itemUuid: data?.attack?.itemUuid,
+        attackSkill: data?.attack?.attackSkill ?? data?.attack?.skill,
+        damage: data?.damage,
         actorId: msg.speaker?.actor,
         tokenId: msg.speaker?.token,
         sceneId: msg.speaker?.scene,
@@ -27,17 +27,14 @@ async function checkMessage(msg) {
 
     let attackSkillEnabled = game.settings.get('autoanimations', 'attackSkill');
     let damageEnabled = game.settings.get('autoanimations', 'damage');
-    let spellEnabled = game.settings.get('autoanimations', 'spell');
 
-    if (!attackSkillEnabled && !damageEnabled && !spellEnabled) {
+    if (!attackSkillEnabled && !damageEnabled) {
         return null;
     }
 
     if (compiledData.attackSkill && attackSkillEnabled) {
         compiledData.extraNames.push(compiledData.attackSkill);
-    } else if (compiledData.spell && spellEnabled) {
-        compiledData.item = compiledData.spell;
-    } else if (damageEnabled) {
+    }  else if (damageEnabled) {
         compiledData.item = { name: compiledData.damage ? "damage" : "no-damage" };
         compiledData.extraNames.push(compiledData.damage ? "damage" : "no-damage");
     } else {
