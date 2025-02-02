@@ -39,11 +39,11 @@ export class AnimationStore extends CategoryStore.EntryStore {
    }
 
    /**
-    * Invoked by WorldSettingArrayStore to provide custom duplication.
+    * Invoked by WorldArrayObjectStore to provide custom duplication.
     *
     * @param {object}   data - A copy of local data w/ new ID already set.
     *
-    * @param {CategoryStore} categoryStore - The source WorldSettingArrayStore instance.
+    * @param {CategoryStore} categoryStore - The source WorldArrayObjectStore instance.
     */
    static duplicate(data, categoryStore) {
       // Provide a unique label appending an indexed counter.

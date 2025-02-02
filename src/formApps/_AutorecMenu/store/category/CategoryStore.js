@@ -2,7 +2,7 @@ import { writable }                 from "svelte/store";
 
 import { localize }                 from "#runtime/util/i18n";
 
-import { WorldSettingArrayStore }   from "#runtime/svelte/store/fvtt/settings/world";
+import { WorldArrayObjectStore }    from "#runtime/svelte/store/fvtt/settings/world";
 import { DynReducerHelper }         from "#runtime/svelte/store/reducer";
 
 import { FVTTFilePickerControl }    from "#standard/application/control/filepicker";
@@ -22,11 +22,11 @@ import {
    aaReturnWeapons,
 } from "../../../../database/jb2a-menu-options.js";
 
-export class CategoryStore extends WorldSettingArrayStore {
+export class CategoryStore extends WorldArrayObjectStore {
    /**
     * A filter function / Svelte store that can be used with DynArrayReducer and set as a store to TJSInput.
     *
-    * @type {(data: object) => boolean}
+    * @type {import('#runtime/svelte/store/reducer').DynReducerHelper.FilterFn.regexObjectQuery}
     */
    static #filterSearch = DynReducerHelper.filters.regexObjectQuery("label");
 
