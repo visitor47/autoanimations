@@ -850,19 +850,6 @@ class AAGameSettings extends TJSGameSettingsWithUI {
                   config: true,
                }
             });
-            settings.push({
-               namespace,
-               key: "spell",
-               folder: game.system.title || game.system.name,
-               options: {
-                  name: 'autoanimations.settings.coreonatk_name',
-                  hint: 'autoanimations.settings.coreonatk_hint',
-                  scope: scope.world,
-                  type: Boolean,
-                  default: true,
-                  config: true,
-               }
-            });
             break;
          case "twodsix":
             settings.push({
