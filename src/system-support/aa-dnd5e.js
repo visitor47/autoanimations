@@ -5,6 +5,8 @@ import { getRequiredData }  from "./getRequiredData.js";
 
 // DnD5e System hooks provided to run animations
 export function systemHooks() {
+    if (game.modules.get("wire")?.active) return; // WIRE handles triggering AA
+    const dnd5eV4 = foundry.utils.isNewerVersion(game.system.version, 3.9);
     if (game.modules.get("midi-qol")?.active) {
         Hooks.on("midi-qol.AttackRollComplete", (workflow) => {
             let playOnDamage = game.settings.get('autoanimations', 'playonDamage');
@@ -21,16 +23,7 @@ export function systemHooks() {
             if (workflow.item?.hasAreaTarget || workflow.item?.hasAttack || workflow.item?.hasDamage) { return };
             useItem(getWorkflowData(workflow))
         });
-        Hooks.on("createMeasuredTemplate", async (template, data, userId) => {
-            if (userId !== game.user.id) { return };
-            const activity = await fromUuid(template.flags?.dnd5e?.origin);
-            const item = activity ? activity?.parent?.parent : template?.flags?.autoanimations?.itemData;
-            const overrideNames = activity?.name && !["heal", "summon"].includes(activity?.name?.trim()) ? [activity.name] : [];
-            templateAnimation(await getRequiredData({item, templateData: template, workflow: template, isTemplate: true, overrideNames}));
-        });
-    } else if (game.modules.get("wire")?.active) {
-        // WIRE handles triggering AA
-    } else if (foundry.utils.isNewerVersion(game.system.version, 3.9)) {
+    } else if (dnd5eV4) {
         Hooks.on("dnd5e.rollAttackV2", async (rolls, data) => {
             const roll = rolls[0];
             const activity = data.subject;
@@ -59,6 +52,28 @@ export function systemHooks() {
             const overrideNames = activity?.name && !["heal", "summon"].includes(activity?.name?.trim()) ? [activity.name] : [];
             useItem(await getRequiredData({item, actor: item.parent, workflow: item, useItemHook: {item, config, options}, spellLevel: options?.flags?.dnd5e?.use?.spellLevel || void 0, overrideNames}));
         });
+    } else {
+        Hooks.on("dnd5e.preRollAttack", async (item, options) => {
+            let spellLevel = options.spellLevel ?? void 0;
+            Hooks.once("dnd5e.rollAttack", async (item, roll) => {
+                criticalCheck(roll, item);
+                let playOnDamage = game.settings.get('autoanimations', 'playonDamageCore')
+                if (item.hasAreaTarget || (item.hasDamage && playOnDamage)) { return; }
+                attack(await getRequiredData({item, actor: item.actor, workflow: item, rollAttackHook: {item, roll}, spellLevel}))
+            })
+        })
+        Hooks.on("dnd5e.rollDamage", async (item, roll) => {
+            let playOnDamage = game.settings.get('autoanimations', 'playonDamageCore')
+            if (item.hasAreaTarget || (item.hasAttack && !playOnDamage)) { return; }
+            damage(await getRequiredData({item, actor: item.actor, workflow: item, rollDamageHook: {item, roll}, spellLevel: roll?.data?.item?.level ?? void 0}))
+        })
+        Hooks.on('dnd5e.useItem', async (item, config, options) => {
+            if (item?.hasAreaTarget || item.hasAttack || item.hasDamage) { return; }
+            useItem(await getRequiredData({item, actor: item.actor, workflow: item, useItemHook: {item, config, options}, spellLevel: options?.flags?.dnd5e?.use?.spellLevel || void 0}))
+        })
+    }
+    // Template creation. Works the same regardless of Midi-QoL
+    if (dnd5eV4) {
         Hooks.on("dnd5e.preCreateActivityTemplate", async (activity, templateData) => {
             templateData.flags.autoanimations = {
                 itemData: {
@@ -79,24 +94,6 @@ export function systemHooks() {
             templateAnimation(await getRequiredData({item, templateData: template, workflow: template, isTemplate: true, overrideNames}));
         });
     } else {
-        Hooks.on("dnd5e.preRollAttack", async (item, options) => {
-            let spellLevel = options.spellLevel ?? void 0;
-            Hooks.once("dnd5e.rollAttack", async (item, roll) => {
-                criticalCheck(roll, item);
-                let playOnDamage = game.settings.get('autoanimations', 'playonDamageCore')
-                if (item.hasAreaTarget || (item.hasDamage && playOnDamage)) { return; }
-                attack(await getRequiredData({item, actor: item.actor, workflow: item, rollAttackHook: {item, roll}, spellLevel}))
-            })
-        })
-        Hooks.on("dnd5e.rollDamage", async (item, roll) => {
-            let playOnDamage = game.settings.get('autoanimations', 'playonDamageCore')
-            if (item.hasAreaTarget || (item.hasAttack && !playOnDamage)) { return; }
-            damage(await getRequiredData({item, actor: item.actor, workflow: item, rollDamageHook: {item, roll}, spellLevel: roll?.data?.item?.level ?? void 0}))
-        })
-        Hooks.on('dnd5e.useItem', async (item, config, options) => {
-            if (item?.hasAreaTarget || item.hasAttack || item.hasDamage) { return; }
-            useItem(await getRequiredData({item, actor: item.actor, workflow: item, useItemHook: {item, config, options}, spellLevel: options?.flags?.dnd5e?.use?.spellLevel || void 0}))
-        })
         Hooks.on("createMeasuredTemplate", async (template, data, userId) => {
             if (userId !== game.user.id) { return };
             templateAnimation(await getRequiredData({itemUuid: template.flags?.dnd5e?.origin, templateData: template, workflow: template, isTemplate: true}))
