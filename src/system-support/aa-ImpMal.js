@@ -50,10 +50,12 @@ export function systemHooks() {
                 checkCrit(msg.system.result)
 
 	        } else {
-	        	 let compiledData = await getRequiredData({
+                let itemId= msg.system.context?.powerId ?? msg.system.context?.skillItemId
+                let compiledData = await getRequiredData({
                     actorId: msg.speaker.actor ?? msg.system.context?.speaker.actor,
                     targets: compileTargets(msg.system.context?.targetSpeakers),
-	        		itemId: msg.system.context?.powerId,
+	        		itemId: itemId,
+                    item: itemId ? null: {name: msg.system.context?.skill},
 	                workflow: msg,
                 })
 	        	if (!compiledData.item) { return; }
