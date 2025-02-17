@@ -58,7 +58,7 @@ export class AnimationStore extends ObjectEntryStore {
       const current = this._data[section][section02].customPath;
 
       const path = await FVTTFilePickerControl.browse({
-         modal: true,
+         modal: false,
          type: "imagevideo",
          current
       });
@@ -209,7 +209,7 @@ export class AnimationStore extends ObjectEntryStore {
       const current = this._data[section][section02].customPath;
 
       const path = await FVTTFilePickerControl.browse({
-         modal: true,
+         modal: false,
          type: "imagevideo",
          current
       });
@@ -224,7 +224,7 @@ export class AnimationStore extends ObjectEntryStore {
       const current = this._data[section].sound.file;
 
       const path = await FVTTFilePickerControl.browse({
-         modal: true,
+         modal: false,
          type: "audio",
          current
       });
@@ -239,7 +239,7 @@ export class AnimationStore extends ObjectEntryStore {
       const current = this._data[section][section02].sound.file;
 
       const path = await FVTTFilePickerControl.browse({
-         modal: true,
+         modal: false,
          type: "audio",
          current
       });

@@ -20,7 +20,7 @@ export class AnimationStore extends CategoryStore.EntryStore {
    /** @type {AnimationPropertyStores} */
    #stores;
 
-   #sessionStorage = {}
+   #sessionStorage = {};
 
    /**
     * @param {object}   data -
@@ -34,7 +34,7 @@ export class AnimationStore extends CategoryStore.EntryStore {
       this.#stores = {
          folderOpen: aaSessionStorage.getStore(this.#sessionStorage.folderOpen, false),
 
-         label: propertyStore(this, 'label'),
+         label: propertyStore(this, "label"),
       };
    }
 
@@ -47,9 +47,9 @@ export class AnimationStore extends CategoryStore.EntryStore {
     */
    static duplicate(data, categoryStore) {
       // Provide a unique label appending an indexed counter.
-      if (typeof data?.label === 'string') {
+      if (typeof data?.label === "string") {
          let cntr = 1;
-         const baseName = data.label ?? '';
+         const baseName = data.label ?? "";
          delete data.metaData;
          do {
             data.label = `${baseName}-${cntr++}`;
@@ -60,7 +60,9 @@ export class AnimationStore extends CategoryStore.EntryStore {
    /**
     * @returns {AnimationPropertyStores}
     */
-   get stores() { return this.#stores; }
+   get stores() {
+      return this.#stores;
+   }
 
    // ----------------------------------------------------------------------------------------------------------------
 
@@ -74,24 +76,32 @@ export class AnimationStore extends CategoryStore.EntryStore {
    /**
     * @returns {string}
     */
-   get label() { return this._data.label ?? ''; }
+   get label() {
+      return this._data.label ?? "";
+   }
 
    /**
     * @param {boolean}  folderOpen - Sets folder opened state.
     */
-   set folderState(folderOpen) { this.#stores.folderOpen.set(folderOpen); }
+   set folderState(folderOpen) {
+      this.#stores.folderOpen.set(folderOpen);
+   }
 
    /**
     * @param {string} label -
     */
-   set label(label) { this.#stores.label.set(label); }
+   set label(label) {
+      this.#stores.label.set(label);
+   }
 
    /**
     * @param {object}   data -
     */
    set(data) {
       if (data.label !== void 0) {
-         if (typeof data.label !== 'string') { throw new TypeError(`'data.label' is not a string.`); }
+         if (typeof data.label !== "string") {
+            throw new TypeError(`'data.label' is not a string.`);
+         }
          this._data.label = data.label;
       }
 
@@ -102,9 +112,9 @@ export class AnimationStore extends CategoryStore.EntryStore {
       const current = this._data[section][section02].customPath;
 
       const path = await FVTTFilePickerControl.browse({
-         modal: true,
+         modal: false,
          type: "imagevideo",
-         current
+         current,
       });
 
       if (path) {
@@ -117,9 +127,9 @@ export class AnimationStore extends CategoryStore.EntryStore {
       const current = this._data[section].sound.file;
 
       const path = await FVTTFilePickerControl.browse({
-         modal: true,
+         modal: false,
          type: "audio",
-         current
+         current,
       });
 
       if (path) {
@@ -130,11 +140,11 @@ export class AnimationStore extends CategoryStore.EntryStore {
 
    async getSource() {
       if (!this._data.metaData) {
-         ui.notifications.info(`Automated Animations | No Defined MetaData on this Entry`)
+         ui.notifications.info(`Automated Animations | No Defined MetaData on this Entry`);
       } else {
          console.log(this._data.metaData);
          ui.notifications.info("Automated Animations | MetaData logged to Dev Console");
-         Hooks.callAll("AutomatedAnimations.metaData", this._data)
+         Hooks.callAll("AutomatedAnimations.metaData", this._data);
       }
    }
 }
