@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@typhonjs-fvtt/runtime": "^0.2.0",
-    "@typhonjs-fvtt/standard": "^0.2.1",
+    "@typhonjs-fvtt/standard": "^0.2.0",
     "svelte": "^4.2.19"
   },
   "devDependencies": {
