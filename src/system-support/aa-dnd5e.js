@@ -9,23 +9,28 @@ export function systemHooks() {
     const dnd5eV4 = foundry.utils.isNewerVersion(game.system.version, 3.9);
     if (game.modules.get("midi-qol")?.active) {
         Hooks.on("midi-qol.AttackRollComplete", (workflow) => {
+            const activity = workflow.activity;
+            if(activity?.description?.chatFlavor?.includes("[noaa]")) return;
             let playOnDamage = game.settings.get('autoanimations', 'playonDamage');
             if (workflow.item?.hasAreaTarget || (workflow.item?.hasDamage && playOnDamage)) { return };
             attack(getWorkflowData(workflow)); criticalCheck(workflow)
         });
         Hooks.on("midi-qol.DamageRollComplete", (workflow) => {
+            const activity = workflow.activity;
+            if(activity?.description?.chatFlavor?.includes("[noaa]")) return;
             let playOnDamage = game.settings.get('autoanimations', 'playonDamage');
             if (workflow.item?.hasAreaTarget || (!playOnDamage && workflow.item?.hasAttack)) { return };
             damage(getWorkflowData(workflow))
         });
         // Items with no Attack/Damage
         Hooks.on("midi-qol.RollComplete", (workflow) => {
+            const activity = workflow.activity;
+            if(activity?.description?.chatFlavor?.includes("[noaa]")) return;
             if (workflow.item?.hasAreaTarget || workflow.item?.hasAttack || workflow.item?.hasDamage) { return };
             useItem(getWorkflowData(workflow))
         });
     } else if (dnd5eV4) {
         Hooks.on("dnd5e.rollAttackV2", async (rolls, data) => {
-            console.log(data.subject, "AutoAnimations | Roll Complete")
             const roll = rolls[0];
             const activity = data.subject;
             if(activity?.description?.chatFlavor?.includes("[noaa]")) return;
@@ -79,6 +84,7 @@ export function systemHooks() {
     // Template creation. Works the same regardless of Midi-QoL
     if (dnd5eV4) {
         Hooks.on("dnd5e.preCreateActivityTemplate", async (activity, templateData) => {
+            if(activity?.description?.chatFlavor?.includes("[noaa]")) return;
             templateData.flags.autoanimations = {
                 itemData: {
                     parent: activity?.parent?.parent?.parent,
@@ -93,13 +99,14 @@ export function systemHooks() {
         Hooks.on("createMeasuredTemplate", async (template, data, userId) => {
             if (userId !== game.user.id) { return };
             const activity = await fromUuid(template.flags?.dnd5e?.origin);
+            if(activity?.description?.chatFlavor?.includes("[noaa]")) return;
             const item = activity ? activity?.parent?.parent : template?.flags?.autoanimations?.itemData;
             const overrideNames = activity?.name && !["heal", "summon"].includes(activity?.name?.trim()) ? [activity.name] : [];
             templateAnimation(await getRequiredData({item, templateData: template, workflow: template, isTemplate: true, overrideNames}));
         });
     } else {
         Hooks.on("createMeasuredTemplate", async (template, data, userId) => {
-            if (userId !== game.user.id) { return };
+            if (userId !== game.user.id) {return };
             templateAnimation(await getRequiredData({itemUuid: template.flags?.dnd5e?.origin, templateData: template, workflow: template, isTemplate: true}))
         })
     }
