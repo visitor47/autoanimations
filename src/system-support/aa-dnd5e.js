@@ -25,8 +25,10 @@ export function systemHooks() {
         });
     } else if (dnd5eV4) {
         Hooks.on("dnd5e.rollAttackV2", async (rolls, data) => {
+            console.log(data.subject, "AutoAnimations | Roll Complete")
             const roll = rolls[0];
             const activity = data.subject;
+            if(activity?.description?.chatFlavor?.includes("[noaa]")) return;
             const playOnDamage = game.settings.get('autoanimations', 'playonDamageCore');
             if (["circle", "cone", "cube", "cylinder", "line", "sphere", "square", "wall"].includes(activity?.target?.template?.type) || (activity?.damage?.parts?.length && activity?.type != "heal" && playOnDamage)) { return; }
             const item = activity?.parent?.parent;
@@ -38,6 +40,7 @@ export function systemHooks() {
         Hooks.on("dnd5e.rollDamageV2", async (rolls, data) => {
             const roll = rolls[0];
             const activity = data.subject;
+            if(activity?.description?.chatFlavor?.includes("[noaa]")) return;
             const playOnDamage = game.settings.get('autoanimations', 'playonDamageCore');
             if (["circle", "cone", "cube", "cylinder", "line", "sphere", "square", "wall"].includes(activity?.target?.template?.type) || (activity?.type == "attack" && !playOnDamage)) { return; }
             const item = activity?.parent?.parent;
@@ -45,7 +48,8 @@ export function systemHooks() {
             damageV2(await getRequiredData({item, actor: item.parent, workflow: item, rollDamageHook: {item, roll}, spellLevel: roll?.data?.item?.level ?? void 0, overrideNames}));
         });
         Hooks.on('dnd5e.postUseActivity', async (activity, usageConfig, results) => {
-            if (["circle", "cone", "cube", "cylinder", "line", "sphere", "square", "wall"].includes(activity?.target?.template?.type) || activity?.type == "attack" || (activity?.damage?.parts?.length && activity?.type != "heal")) { return; }
+            if(activity?.description?.chatFlavor?.includes("[noaa]")) return;
+            if (["circle", "cone", "cube", "cylinder", "line", "sphere", "square", "wall"].includes(activity?.target?.template?.type) || activity?.type == "attack" || (activity?.damage?.parts?.length && activity?.type != "heal")) {return;}
             const config = usageConfig;
             const options = results;
             const item = activity?.parent?.parent;
