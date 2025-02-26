@@ -36,7 +36,7 @@ export function systemHooks() {
             if(activity?.description?.chatFlavor?.includes("[noaa]")) return;
             const playOnDamage = game.settings.get('autoanimations', 'playonDamageCore');
             if (["circle", "cone", "cube", "cylinder", "line", "sphere", "square", "wall"].includes(activity?.target?.template?.type) || (activity?.damage?.parts?.length && activity?.type != "heal" && playOnDamage)) { return; }
-            const item = activity?.parent?.parent;
+            const item = activity?.item;
             const ammoItem = item?.parent?.items?.get(data?.ammoUpdate?.id) ?? null;
             const overrideNames = activity?.name && !["heal", "summon"].includes(activity?.name?.trim()) ? [activity.name] : [];
             criticalCheck(roll, item);
@@ -48,7 +48,7 @@ export function systemHooks() {
             if(activity?.description?.chatFlavor?.includes("[noaa]")) return;
             const playOnDamage = game.settings.get('autoanimations', 'playonDamageCore');
             if (["circle", "cone", "cube", "cylinder", "line", "sphere", "square", "wall"].includes(activity?.target?.template?.type) || (activity?.type == "attack" && !playOnDamage)) { return; }
-            const item = activity?.parent?.parent;
+            const item = activity?.item;
             const overrideNames = activity?.name && !["heal", "summon"].includes(activity?.name?.trim()) ? [activity.name] : [];
             damageV2(await getRequiredData({item, actor: item.parent, workflow: item, rollDamageHook: {item, roll}, spellLevel: roll?.data?.item?.level ?? void 0, overrideNames}));
         });
@@ -57,7 +57,7 @@ export function systemHooks() {
             if (["circle", "cone", "cube", "cylinder", "line", "sphere", "square", "wall"].includes(activity?.target?.template?.type) || activity?.type == "attack" || (activity?.damage?.parts?.length && activity?.type != "heal")) {return;}
             const config = usageConfig;
             const options = results;
-            const item = activity?.parent?.parent;
+            const item = activity?.item;
             const overrideNames = activity?.name && !["heal", "summon"].includes(activity?.name?.trim()) ? [activity.name] : [];
             useItem(await getRequiredData({item, actor: item.parent, workflow: item, useItemHook: {item, config, options}, spellLevel: options?.flags?.dnd5e?.use?.spellLevel || void 0, overrideNames}));
         });
@@ -83,24 +83,12 @@ export function systemHooks() {
     }
     // Template creation. Works the same regardless of Midi-QoL
     if (dnd5eV4) {
-        Hooks.on("dnd5e.preCreateActivityTemplate", async (activity, templateData) => {
-            if(activity?.description?.chatFlavor?.includes("[noaa]")) return;
-            templateData.flags.autoanimations = {
-                itemData: {
-                    parent: activity?.parent?.parent?.parent,
-                    actor: activity?.parent?.parent?.parent,
-                    name: activity?.parent?.parent?.name,
-                    type: activity?.parent?.parent?.type,
-                    system: activity?.parent?.parent?.system,
-                    flags: activity?.parent?.parent?.flags
-                }
-            }
-        });
         Hooks.on("createMeasuredTemplate", async (template, data, userId) => {
             if (userId !== game.user.id) { return };
-            const activity = await fromUuid(template.flags?.dnd5e?.origin);
-            if(activity?.description?.chatFlavor?.includes("[noaa]")) return;
-            const item = activity ? activity?.parent?.parent : template?.flags?.autoanimations?.itemData;
+            const activity = fromUuidSync(template.flags?.dnd5e?.origin);
+            if (!activity) return;
+            if (activity.description.chatFlavor.includes("[noaa]")) return;
+            const item = activity?.item;
             const overrideNames = activity?.name && !["heal", "summon"].includes(activity?.name?.trim()) ? [activity.name] : [];
             templateAnimation(await getRequiredData({item, templateData: template, workflow: template, isTemplate: true, overrideNames}));
         });
