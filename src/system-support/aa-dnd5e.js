@@ -24,7 +24,7 @@ export function systemHooks() {
     Hooks.on("dnd5e.rollDamageV2", async (rolls, data) => {
             const roll = rolls[0];
             const activity = data.subject;
-            const hit = !!activity.actor.hits?.[activity.relativeID];
+            const hit = !!(activity.actor.hits?.[activity.relativeID] ?? true);
             delete activity.actor.hits[activity.relativeID];
         //const hit = !!activity._workflow?.hitTargets?.size;
             if(activity?.description?.chatFlavor?.includes("[noaa]")) return;
