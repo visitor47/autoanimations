@@ -8,7 +8,10 @@ export function systemHooks() {
     if(!foundry.utils.isNewerVersion(game.system.version, 3.9)) return ui.notifications.error(`Automated Animations: This version of Automated Animations requires DnD5e 4.3 or higher, please downgrade to Automated Animations 5.0.10 or update your game system.`, {permanent: true});
     Hooks.on("dnd5e.rollAttackV2", async (rolls, data) => {
             const roll = rolls[0];
+            const hit = roll.total >= (roll.options.target ?? 0);
             const activity = data.subject;
+        activity.actor.hits ??= {};
+        activity.actor.hits[activity.relativeID] = hit;
             if(activity?.description?.chatFlavor?.includes("[noaa]")) return;
             const playOnDamage = game.settings.get('autoanimations', 'playonDamageCore');
             if (["circle", "cone", "cube", "cylinder", "line", "sphere", "square", "wall"].includes(activity?.target?.template?.type) || (activity?.damage?.parts?.length && activity?.type != "heal" && playOnDamage)) { return; }
@@ -16,18 +19,21 @@ export function systemHooks() {
             criticalCheck(roll, item);
             const ammoItem = item?.parent?.items?.get(data?.ammoUpdate?.id) ?? null;
             const overrideNames = activity?.name && !["heal", "summon"].includes(activity?.name?.trim()) ? [activity.name] : [];
-            attackV2(await getRequiredData({item: item, actor: item.parent, roll: item, rollAttackHook: {item, roll}, spellLevel: roll?.data?.item?.level ?? void 0, ammoItem, overrideNames}));
+            attackV2(await getRequiredData({item: item, actor: item.parent, roll: item, rollAttackHook: {item, roll}, spellLevel: roll?.data?.item?.level ?? void 0, ammoItem, overrideNames, hit}));
         });
     Hooks.on("dnd5e.rollDamageV2", async (rolls, data) => {
             const roll = rolls[0];
             const activity = data.subject;
+            const hit = !!activity.actor.hits?.[activity.relativeID];
+            delete activity.actor.hits[activity.relativeID];
+        //const hit = !!activity._workflow?.hitTargets?.size;
             if(activity?.description?.chatFlavor?.includes("[noaa]")) return;
             const playOnDamage = game.settings.get('autoanimations', 'playonDamageCore');
             if (["circle", "cone", "cube", "cylinder", "line", "sphere", "square", "wall"].includes(activity?.target?.template?.type) || (activity?.type == "attack" && !playOnDamage)) { return; }
             const item = activity?.item;
             criticalCheck(roll, item);
             const overrideNames = activity?.name && !["heal", "summon"].includes(activity?.name?.trim()) ? [activity.name] : [];
-            damageV2(await getRequiredData({item, actor: item.parent, roll: item, rollDamageHook: {item, roll}, spellLevel: roll?.data?.item?.level ?? void 0, overrideNames}));
+            damageV2(await getRequiredData({hit: hit, item, actor: item.parent, roll: item, rollDamageHook: {item, roll}, spellLevel: roll?.data?.item?.level ?? void 0, overrideNames, }));
         });
     Hooks.on('dnd5e.postUseActivity', async (activity, usageConfig, results) => {
         if (activity?.description?.chatFlavor?.includes("[noaa]")) return;
