@@ -10,8 +10,8 @@ export function systemHooks() {
             const roll = rolls[0];
             const hit = roll.total >= (roll.options.target ?? 0);
             const activity = data.subject;
-        activity.actor.hits ??= {};
-        activity.actor.hits[activity.relativeID] = hit;
+            activity.actor.hits ??= {};
+            activity.actor.hits[activity.relativeID] = hit;
             if(activity?.description?.chatFlavor?.includes("[noaa]")) return;
             const playOnDamage = game.settings.get('autoanimations', 'playonDamageCore');
             if (["circle", "cone", "cube", "cylinder", "line", "sphere", "square", "wall"].includes(activity?.target?.template?.type) || (activity?.damage?.parts?.length && activity?.type != "heal" && playOnDamage)) { return; }
@@ -25,8 +25,7 @@ export function systemHooks() {
             const roll = rolls[0];
             const activity = data.subject;
             const hit = !!(activity.actor.hits?.[activity.relativeID] ?? true);
-            delete activity.actor.hits[activity.relativeID];
-        //const hit = !!activity._workflow?.hitTargets?.size;
+            if(activity.actor.hits) delete activity.actor.hits[activity.relativeID];
             if(activity?.description?.chatFlavor?.includes("[noaa]")) return;
             const playOnDamage = game.settings.get('autoanimations', 'playonDamageCore');
             if (["circle", "cone", "cube", "cylinder", "line", "sphere", "square", "wall"].includes(activity?.target?.template?.type) || (activity?.type == "attack" && !playOnDamage)) { return; }
