@@ -47,7 +47,7 @@ export function systemHooks() {
             if (userId !== game.user.id) { return };
             const activity = fromUuidSync(template.flags?.dnd5e?.origin);
             if (!activity) return;
-            if (activity.description.chatFlavor.includes("[noaa]")) return;
+            if (activity?.description?.chatFlavor?.includes("[noaa]")) return;
             const item = activity?.item;
             const overrideNames = activity?.name && !["heal", "summon"].includes(activity?.name?.trim()) ? [activity.name] : [];
             templateAnimation(await getRequiredData({item, templateData: template, roll: template, isTemplate: true, overrideNames}));
