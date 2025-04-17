@@ -30,6 +30,7 @@ export function systemHooks() {
             workflow: msg,
             playOnDamage: playOnDmg,
             bypassTemplates: true,
+            targets: [msg.target?.token].filter(x => !!x),
         })
         if (compiledData.item?.type === "effect" || compiledData.item?.type === "condition") {
             debug ("This is a Condition or Effect, exiting main workflow")
