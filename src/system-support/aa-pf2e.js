@@ -291,7 +291,7 @@ function checkOutcome(input) {
         if (outcome === 'success' || outcome === 'criticalsuccess') {
             hitTargets = input.targets;
         } else {
-            hitTargets = false
+            hitTargets = [];
         }
     } else {
         hitTargets = input.targets;
