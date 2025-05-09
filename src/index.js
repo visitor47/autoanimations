@@ -79,6 +79,30 @@ function registerAAItemHooks() {
         buttons.splice(0, 0, buttonOptions)
     })
 
+        Hooks.on('getHeaderControlsApplicationV2', (sheet, buttons) => {
+        if(!["Item", "ActiveEffect"].includes(sheet.document?.documentName)) return;
+        if (!game.user.isGM && game.settings.get("autoanimations", "hideFromPlayers")) {
+            return;
+        }
+        const document = sheet.document;
+        let buttonOptions = {
+            class: "aaItemSettings",
+            icon: "fas fa-biohazard",
+            label: "Automated Animations",
+            onClick: async () => {
+                await flagMigrations.handle(document);
+                const pf2eRuleTypes = ['condition', 'effect'];
+                // if this is a PF1 "Buff" effect or PF2e Ruleset Item (Active Effects) launch the Active Effect menu. Otherwise continue as normal
+                if ((game.system.id === 'pf1' && document?.type === 'buff') || (game.system.id === 'pf2e' && pf2eRuleTypes.includes(document?.type))) {
+                    new AEMenuApp(document, {}).render(true, { focus: true });
+                } else {
+                    new ItemMenuApp(document, {}).render(true, { focus: true });
+                }
+            }
+        }
+        buttons.push(buttonOptions)
+    })
+
     // Using AE Config header buttons Hook to inject A-A button
     Hooks.on('getActiveEffectConfigHeaderButtons', async (aeSheet, buttons) => {
         if (!game.user.isGM && game.settings.get("autoanimations", "hideFromPlayers")) {
