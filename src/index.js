@@ -43,6 +43,9 @@ Hooks.once('socketlib.ready', function () {
     setupSocket();
 });
 
+window.MIN_WINDOW_HEIGHT = 50;
+window.MIN_WINDOW_WIDTH = 200;
+
 export let aaDatabase;
 // Hook for macro to open Autorec Menu
 Hooks.on('AutomaticAnimations.Open.Menu.New',() => showAutorecMenu());
