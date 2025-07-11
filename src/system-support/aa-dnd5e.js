@@ -14,7 +14,7 @@ export function systemHooks() {
             activity.actor.hits[activity.relativeID] = hit;
             if(activity?.description?.chatFlavor?.includes("[noaa]")) return;
             const playOnDamage = game.settings.get('autoanimations', 'playonDamageCore');
-            if (["circle", "cone", "cube", "cylinder", "line", "sphere", "square", "wall"].includes(activity?.target?.template?.type) || (activity?.damage?.parts?.length && activity?.type != "heal" && playOnDamage)) { return; }
+            if (Object.keys(CONFIG.DND5E.areaTargetTypes).includes(activity?.target?.template?.type) || (activity?.damage?.parts?.length && activity?.type != "heal" && playOnDamage)) { return; }
             const item = activity?.item;
             criticalCheck(roll, item);
             const ammoItem = item?.parent?.items?.get(data?.ammoUpdate?.id) ?? null;
@@ -28,7 +28,7 @@ export function systemHooks() {
             if(activity.actor.hits) delete activity.actor.hits[activity.relativeID];
             if(activity?.description?.chatFlavor?.includes("[noaa]")) return;
             const playOnDamage = game.settings.get('autoanimations', 'playonDamageCore');
-            if (["circle", "cone", "cube", "cylinder", "line", "sphere", "square", "wall"].includes(activity?.target?.template?.type) || (activity?.type == "attack" && !playOnDamage)) { return; }
+            if (Object.keys(CONFIG.DND5E.areaTargetTypes).includes(activity?.target?.template?.type) || (activity?.type == "attack" && !playOnDamage)) { return; }
             const item = activity?.item;
             criticalCheck(roll, item);
             const overrideNames = activity?.name && !["heal", "summon"].includes(activity?.name?.trim()) ? [activity.name] : [];
@@ -36,7 +36,7 @@ export function systemHooks() {
         });
     Hooks.on('dnd5e.postUseActivity', async (activity, usageConfig, results) => {
         if (activity?.description?.chatFlavor?.includes("[noaa]")) return;
-            if (["circle", "cone", "cube", "cylinder", "line", "sphere", "square", "wall"].includes(activity?.target?.template?.type) || ((activity?.damage?.parts?.length || activity?.type == "heal"))) { return; }
+            if (Object.keys(CONFIG.DND5E.areaTargetTypes).includes(activity?.target?.template?.type) || ((activity?.damage?.parts?.length || activity?.type == "heal"))) { return; }
             const config = usageConfig;
             const options = results;
             const item = activity?.item;
