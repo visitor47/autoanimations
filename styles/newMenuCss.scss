@@ -1,7 +1,11 @@
-#AA-autorec-settings, #AA-item-settings, #AA-ae-settings {
+#AA-autorec-settings, #AA-item-settings, #AA-ae-settings, #OptionsInformation, #Autorec-Menu-Manager {
     min-height: 250px;
     min-width: 550px;
     max-width: 1024px;
+
+    table th, table td{
+        padding: 0;
+    }
 
     .window-content {
         color: black;
