@@ -96,28 +96,15 @@ function registerAAItemHooks() {
                 if ((game.system.id === 'pf1' && document?.type === 'buff') || (game.system.id === 'pf2e' && pf2eRuleTypes.includes(document?.type))) {
                     new AEMenuApp(document, {}).render(true, { focus: true });
                 } else {
+                    if(document.documentName === "Item") {
                     new ItemMenuApp(document, {}).render(true, { focus: true });
+                    }else if(document.documentName === "ActiveEffect") {
+                        new AEMenuApp(document, {}).render(true, { focus: true });
+                    }
                 }
             }
         }
         buttons.push(buttonOptions)
-    })
-
-    // Using AE Config header buttons Hook to inject A-A button
-    Hooks.on('getActiveEffectConfigHeaderButtons', async (aeSheet, buttons) => {
-        if (!game.user.isGM && game.settings.get("autoanimations", "hideFromPlayers")) {
-            return;
-        }
-        let buttonOptions = {
-            class: "aaItemSettings",
-            icon: "fas fa-biohazard",
-            label: "A-A",
-            onclick: async () => {
-                await flagMigrations.handle(aeSheet.document);
-                new AEMenuApp(aeSheet.document, {}).render(true, { focus: true });
-            }
-        }
-        buttons.splice(0, 0, buttonOptions)
     })
 
     // Tidy 5e Sheet App V2 compatibility
