@@ -46,7 +46,7 @@ export async function templatefx(handler, animationData, templateDocument) {
     })
 
     if (data.options.persistent && (data.options.persistType === 'overheadtile' || data.options.persistType === 'groundtile')) {
-debugger
+
         let trueSize;
         if (templateType === 'rect') {
             trueSize = template.width;
