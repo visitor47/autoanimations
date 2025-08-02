@@ -46,7 +46,7 @@ export async function templatefx(handler, animationData, templateDocument) {
     })
 
     if (data.options.persistent && (data.options.persistType === 'overheadtile' || data.options.persistType === 'groundtile')) {
-
+debugger
         let trueSize;
         if (templateType === 'rect') {
             trueSize = template.width;
@@ -64,6 +64,11 @@ export async function templatefx(handler, animationData, templateDocument) {
         const tileY = templateType === 'circle' ? (template.y - (tileHeight / 2)) : (template.y + ((templateLength - tileHeight) / 2));
 
         const templateObject = buildTile(tileX, tileY, isOverhead, tileWidth, tileHeight);
+
+        if(data.options.tint && data.options.tintColor) templateObject.texture.tint = data.options.tintColor;
+
+        templateObject.alpha = data.options.opacity;
+
         aaSeq.thenDo(function () {
             socketlibSocket.executeAsGM("placeTile", templateObject);
         })
