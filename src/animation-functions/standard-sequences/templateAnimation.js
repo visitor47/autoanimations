@@ -122,7 +122,7 @@ export async function templatefx(handler, animationData, templateDocument) {
             if (data.options.persistent) {
                 templateSeq.persist(true)
                 if (data.options.persistType === 'attachtemplate') {
-                    templateSeq.attachTo(template, { followRotation: true })
+                    templateSeq.attachTo(template, { bindRotation: true })
                 } else {
                     templateSeq.atLocation(template, { cacheLocation: true })
                     templateSeq.persist()
