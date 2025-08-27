@@ -278,6 +278,7 @@ function handleTemplates() {
 
     // Removes the template Grid Highlighting on Canvas Load
     function removeGridHighlightsOnLoad() {
+        if(!canvas.grid) return;
         let highlights = Object.keys(canvas.grid.highlightLayers);
         if (highlights.length) {
             highlights.forEach((e) => {

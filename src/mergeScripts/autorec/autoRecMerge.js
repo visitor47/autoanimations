@@ -83,7 +83,7 @@ export const autoRecMigration = {
                 await game.settings.set('autoanimations', 'aaAutorec-aefx', newAefx)
             }
             if (Object.keys(this.migrations).map(n => Number(n)).reverse()[0] === 5) {
-                game.settings.set('autoanimations', 'aaAutorec', {version: 5});
+                await game.settings.set('autoanimations', 'aaAutorec', {version: 5});
             } else {
                 let versionHandler = game.settings.get('autoanimations', 'aaAutorec');
                 versionHandler.version = Object.keys(this.migrations).map(n => Number(n)).reverse()[0];

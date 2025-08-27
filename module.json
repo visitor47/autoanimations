@@ -19,8 +19,6 @@
 		"minimum": "13",
 		"verified": "13"
 	},
-	"minimumCoreVersion": "11",
-	"compatibleCoreVersion": "12",
 	"scripts": [],
 	"esmodules": [
 		"dist/autoanimations.js"
