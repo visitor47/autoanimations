@@ -91,7 +91,6 @@ export function secondaryEffect(secondary, seq, targetArray, targetEnabled = fal
 }
 
 export function targetEffect(targetFX, seq, targetArray, missable = false, handler) {
-    debugger
     const options = targetFX.options;
     if (targetFX.sound) {
         seq.addSequence(targetFX.sound)
