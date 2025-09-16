@@ -215,8 +215,17 @@ Hooks.once('ready', async function () {
         systemIdClean,
         availableSystems: Object.keys(systemSupport),
         hasSystemSupport: !!systemSupport[systemIdClean],
+        systemHooksFn: systemSupport[systemIdClean]?.systemHooks,
+        isFunction: typeof systemSupport[systemIdClean]?.systemHooks === 'function'
     });
-    systemSupport[systemIdClean] ? systemSupport[systemIdClean].systemHooks() : systemSupport.standard.systemHooks();
+
+    if (systemSupport[systemIdClean] && typeof systemSupport[systemIdClean].systemHooks === 'function') {
+        console.log(`Automated Animations | Loading hooks for ${systemId}`);
+        systemSupport[systemIdClean].systemHooks();
+    } else {
+        console.log("Automated Animations | Using standard hooks");
+        systemSupport.standard.systemHooks();
+    }
 
     registerActiveEffectHooks();
     
