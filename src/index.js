@@ -210,11 +210,13 @@ Hooks.once('ready', async function () {
     // Register Hooks by system
     const systemId = game.system.id;
     const systemIdClean = systemId.replace(/\-/g, '');
-    if (systemId === "sw25") {
-        systemSupport[systemId].systemHooks();
-    } else {
-        systemSupport[systemIdClean] ? systemSupport[systemIdClean].systemHooks() : systemSupport.standard.systemHooks();
-    }
+    console.log("Automated Animations | Initializing for system:", {
+        systemId,
+        systemIdClean,
+        availableSystems: Object.keys(systemSupport),
+        hasSystemSupport: !!systemSupport[systemIdClean],
+    });
+    systemSupport[systemIdClean] ? systemSupport[systemIdClean].systemHooks() : systemSupport.standard.systemHooks();
 
     registerActiveEffectHooks();
     
