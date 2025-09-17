@@ -16,7 +16,7 @@ export function systemHooks() {
                 actorId: object.actor?.id,
                 rollData: object.roll,
                 targetId: object.target?.id,
-                objectName: object.item?.name
+                objectName: object.item?.item?.name,
             });
 
         
@@ -24,7 +24,7 @@ export function systemHooks() {
             console.log("SW25 | Preparing animation data for:", object.item?.name);
             const requiredData = await getRequiredData({
                 item: object.item,
-                name: object.item?.name,
+                name: object.item?.item?.name,
                 actor: object.actor,
                 workflow: object.roll,
                 isFumble: object.roll?.isFumble,
