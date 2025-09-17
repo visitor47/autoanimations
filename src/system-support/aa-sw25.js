@@ -7,27 +7,29 @@ import { getRequiredData }  from "./getRequiredData.js";
 export function systemHooks() {
     console.log("Automated Animations | SW25 System Support Loading");
     debug("SW25 System Hooks Active");
-    Hooks.on("sw25.applyDamage", async (data) => {
+    Hooks.on("sw25.applyDamage", async (object) => {
             console.log("SW25 | applyDamage hook received data:", {
-                hasItem: !!data.item,
-                itemType: data.item?.type,
-                itemId: data.item?.id,
-                hasActor: !!data.actor,
-                actorId: data.actor?.id,
-                rollData: data.roll,
-                targetId: data.target?.id
+                hasItem: !!object.item,
+                itemType: object.item?.type,
+                itemId: object.item?.id,
+                hasActor: !!object.actor,
+                actorId: object.actor?.id,
+                rollData: object.roll,
+                targetId: object.target?.id,
+                objectName: object.item?.name
             });
 
         
 
-            console.log("SW25 | Preparing animation data for:", data.item.name);
+            console.log("SW25 | Preparing animation data for:", object.item?.name);
             const requiredData = await getRequiredData({
-                item: data.item,
-                actor: data.actor,
-                workflow: data.roll,
-                isFumble: data.roll?.isFumble,
-                isCritical: data.roll?.isCritical,
-                targets: [data.target],
+                item: object.item,
+                name: object.item?.name,
+                actor: object.actor,
+                workflow: object.roll,
+                isFumble: object.roll?.isFumble,
+                isCritical: object.roll?.isCritical,
+                targets: [object.target],
             });
             
             console.log("SW25 | Animation data prepared:", {
@@ -41,6 +43,11 @@ export function systemHooks() {
     }
 
 async function runAnimation(input) {
+    console.log("SW25 | Running animation with data:", input);
+    if(!input.item) {
+        console.log("SW25 | No item data found, aborting animation.");
+    }
+
     const handler = await AAHandler.make(input)
     if (!handler?.item || !handler?.sourceToken) {
         debug("No Item or Source Token", handler)
