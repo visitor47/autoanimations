@@ -38,7 +38,7 @@ export function systemHooks() {
                 animationType: requiredData.animation
             });
             
-            runAnimation(requiredData);
+            runAnimation(object);
         });
     }
 
